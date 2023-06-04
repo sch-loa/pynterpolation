@@ -1,24 +1,55 @@
 import random
 import numpy as np
+from sympy import symbols, Eq, Poly, solve
 
 
-def polinomio_interpolador_newton(cantidad, metodo):
+def polinomio_interpolador_newton():
+    x = symbols('x')
+    c = symbols('c')
+
+    pares_xy = generador_pares_random(20)
+    #pares_xy = [(1,2),(3,4),(4,-1)]
+    p_factores = factor_polinomio(pares_xy)
+
+
+    x0, y0 = pares_xy[0]
+    p0 = y0
+    for x1, y1 in pares_xy[1:]:
+        p1 = p0 + c * next(p_factores)
+        c_1 = calcular_coeficiente(p1, (x1, y1), (x, c))
+        p1 = p1.replace(c, c_1)
+        #print(p1)
+        #print(c_1)
+
+        p0 = p1
+    return (pares_xy, p0, x)
+def polinomio_interpolador_lagrange():
     pass
 
-def polinomio_interpolador_lagrange(cantidad, metodo):
+def polinomio_interpolador_diferencias_divididas():
     pass
 
-def polinomio_interpolador_diferencias_divididas(cantidad, metodo):
-    pass
+def calcular_coeficiente(p1, valores, simbolos):
+    x1, y1 = valores
+    x, c = simbolos
+    return solve(Eq(p1, y1).subs(x, x1), c)[0]
 
-# Genera una lista de n pares aleatorios entre -30 y 30 sin repetición
+# Dada una lista de numeros x_n retorna la multiplicación de los primeros n elementos
+# en su forma (x - x_n), con n creciendo en cada iteración, es decir:
+# Primera iteración: (x - x_0)
+# Segunda iteración: (x - x_0)*(x - x_1)
+# N-nésima iteración: (x - x_0)*(x - x_1)*(x - x_2)...*(x - x_n)
+def factor_polinomio(pares_xy):
+    x = symbols('x')
+    factores_xy = 1
+    for x0, _ in pares_xy:
+        factores_xy *= x - x0
+        yield factores_xy
+
+# Genera una lista de n pares aleatorios entre -15 y 15 sin repetición
 def generador_pares_random(cantidad):
-    num_random = lambda: random.sample(range(-30,30), cantidad)
+    num_random = lambda: random.sample(range(-15,15), cantidad)
     return list(zip(num_random(),num_random()))
 
-# Reordena los elementos de uan lista al azar
-def reordenar_pares_random(lista):
-    return random.shuffle(lista)
-
 def grado_polinomio(polinomio):
-    pass
+    return Poly(polinomio).degree()
