@@ -1,9 +1,11 @@
 from matplotlib import pyplot as plt
+from Equation import Expression
 import random as rd
 import numpy as np
 import sympy as sp
 
 from algorithms import polinomio_interpolador_newton, generador_pares_random, grado_polinomio, coeficientes_iguales
+from algorithms import newton_mas_secante
 
 METODO_NEWTON_CARTEL = """
  ____________________________________________________________________________
@@ -52,6 +54,13 @@ IGUALDAD_POLINOMIOS_CARTEL = """\033[F
 |____________________________________________________________________________|   
                             """
 
+BUSQUEDA_RAIZ_CARTEL = """\033[F
+ ____________________________________________________________________________
+|                                                                            |
+|                     BUSQUEDA DE UNA RAIZ DEL POLINOMIO                     |
+|____________________________________________________________________________|
+                        """
+
 # Polinomio interpolador para el conjunto de datos original
 pares_xy = generador_pares_random(20)
 polinomio, x_simb = polinomio_interpolador_newton(pares_xy)
@@ -74,6 +83,11 @@ print(f'   El grado del polinomio es: {grado_polinomio(polinomio)}')
 print(IGUALDAD_POLINOMIOS_CARTEL)
 if(coeficientes_iguales(polinomio, polinomio_invertido, x_simb) and coeficientes_iguales(polinomio, polinomio_desordenado, x_simb)):
     print('   Los coeficientes de los tres polinomios son exactamente iguales.\n')
+
+# Se busca una raíz con valores iniciales y cota de error de forma arbitraria
+print(BUSQUEDA_RAIZ_CARTEL)
+x1 = newton_mas_secante(Expression(str(polinomio), ['x']), Expression(str(sp.diff(polinomio)), ['x']), -15, 15, 0.01)
+print(f'   La raíz aproximada con dos decimales es {round(x1, 2)}\n')
 
 # GRAFICOS DE LOS POLINOMIOS Y PARES ORDENADOS
 TITULOS = ['Ordenados', 'Invertidos', 'Desordenados']

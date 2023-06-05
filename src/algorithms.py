@@ -57,3 +57,46 @@ def grado_polinomio(polinomio):
 # Compara los coeficientes de una lista de polinomios entre sí
 def coeficientes_iguales(p0, p1, x):
     return Poly(p0, x).all_coeffs() == Poly(p1, x).all_coeffs()
+
+#################################################
+# FUNCIONES PARA APROXIMAR RAÍCES (TP ANTERIOR) #
+#################################################
+
+# Se sacaron funcionalidades innecesarias como el manejo de los datos
+# utilizados en cada iteración, ya que solo nos interesa hallar la raíz.
+
+# Combina los algoritmos de la secante y newton-raphson
+def newton_mas_secante(fx, fxp, x0, x1, err):
+    c = 1 # Contador de la iteración
+    condicion = lambda p0, p1 : error_absoluto(p0,p1) < err or error_absoluto(p0,p1) == 0 or fx(p0) == 0 or fx(p1) == 0 # Condicion de parada
+    while(not condicion(x0,x1)):
+        x0, x1 = secante(fx, x0, x1) # Recibe datos actualizados y nuevo x0, x1
+        c += 1
+
+        # Verifica la condición para el cálculo anterior
+        if(condicion(x0,x1)):
+            break
+        
+        x0, x1 = newtonraphson(fx,fxp,x1) # Recibe datos actualizados y nuevo x0, x1
+        c += 1
+
+    return x1
+
+def newtonraphson(fx,fxp,p0):
+    p1 = p0 - (fx(p0))/fxp(p0)
+    return (p0, p1)
+
+def secante(fx,p0,p1):
+    dividendo = fx(p1) - fx(p0)
+
+    # Para evitar una división por cero se le suma una cantidad mínima al dividendo
+    # en caso de ser cero para evitar errores pero a la vez no perjudicar el cálculo.
+    if(dividendo == 0):
+        dividendo = 10**-10
+
+    p2 = p1 - (fx(p1)*(p1-p0)) / dividendo
+
+    return (p1,p2)
+
+def error_absoluto(x0, x1):
+    return abs(x1 - x0)
