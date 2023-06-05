@@ -2,7 +2,7 @@ import random
 import numpy as np
 from sympy import symbols, Eq, Poly, solve
 
-
+# Función principal del método de newton
 def polinomio_interpolador_newton(pares_xy):
     x = symbols('x')
     c = symbols('c')
@@ -15,17 +15,26 @@ def polinomio_interpolador_newton(pares_xy):
         p1 = p0 + c * next(p_factores)
         c_1 = calcular_coeficiente(p1, (x1, y1), (x, c))
         p1 = p1.replace(c, c_1)
-
         p0 = p1
 
     return (p0, x)
 
 
-def polinomio_interpolador_lagrange():
-    pass
+def polinomio_interpolador_lagrange(pares_xy):
+    x = symbols('x')
 
-def polinomio_interpolador_diferencias_divididas():
-    pass
+    # Tomo el último valor del generador
+    factor_xy = 0
+    for factor in factor_polinomio(pares_xy):
+        factor_xy = factor
+    
+    polinomio = 0
+    for x1, y1 in pares_xy:
+        l1_factor = factor_xy / (x - x1) # Cancelo el par actual
+        l1 = y1 *(l1_factor / l1_factor.replace(x, x1))
+        polinomio += l1
+    
+    return polinomio
 
 # Calcula el coeficiente del polinomio reemplazando el valor
 # de la variable simbólica x y despejando c
@@ -57,6 +66,7 @@ def grado_polinomio(polinomio):
 # Compara los coeficientes de una lista de polinomios entre sí
 def coeficientes_iguales(p0, p1, x):
     return Poly(p0, x).all_coeffs() == Poly(p1, x).all_coeffs()
+
 
 #################################################
 # FUNCIONES PARA APROXIMAR RAÍCES (TP ANTERIOR) #

@@ -4,8 +4,10 @@ import random as rd
 import numpy as np
 import sympy as sp
 
-from algorithms import polinomio_interpolador_newton, generador_pares_random, grado_polinomio, coeficientes_iguales
+from algorithms import polinomio_interpolador_newton, polinomio_interpolador_lagrange
+from algorithms import generador_pares_random, grado_polinomio, coeficientes_iguales
 from algorithms import newton_mas_secante
+from graphics import graficar
 
 METODO_NEWTON_CARTEL = """
  ____________________________________________________________________________
@@ -41,7 +43,7 @@ METODO_NEWTON_CARTEL = """
 |____________________________________________________________________________|
                     """
 
-IGUALDAD_POLINOMIOS_CARTEL = """\033[F
+IGUALDAD_POLINOMIOS_CARTEL = """
  ____________________________________________________________________________
 |                                                                            |
 |                          IGUALDAD ENTRE POLINOMIOS                         |
@@ -54,12 +56,30 @@ IGUALDAD_POLINOMIOS_CARTEL = """\033[F
 |____________________________________________________________________________|   
                             """
 
-BUSQUEDA_RAIZ_CARTEL = """\033[F
+BUSQUEDA_RAIZ_CARTEL = """
  ____________________________________________________________________________
 |                                                                            |
 |                     BUSQUEDA DE UNA RAIZ DEL POLINOMIO                     |
 |____________________________________________________________________________|
                         """
+
+METODO_LAGRANGE_CARTEL = """
+ ____________________________________________________________________________
+|                                                                            |
+|                     POLINOMIO INTERPOLADOR DE LAGRANGE                     |
+|____________________________________________________________________________|
+                        """
+
+CONCLUSIONES_CARTEL = """
+ ____________________________________________________________________________
+|                                                                            |
+|                                CONCLUSIONES                                |
+|____________________________________________________________________________|
+                        """
+
+####################
+# METODO DE NEWTON #
+####################
 
 # Polinomio interpolador para el conjunto de datos original
 pares_xy = generador_pares_random(20)
@@ -67,48 +87,44 @@ polinomio, x_simb = polinomio_interpolador_newton(pares_xy)
 
 # Polinomio interpolador para el conjunto de datos invertido
 pares_xy_invertidos = pares_xy[::-1]
-polinomio_invertido, x_simb_invertido = polinomio_interpolador_newton(pares_xy)
+polinomio_invertido, _ = polinomio_interpolador_newton(pares_xy)
 
 # Polinomio interpolador para el conjunto de datos desordenado aleatoriamente
 pares_xy_desordenados = rd.sample(pares_xy, len(pares_xy))
-polinomio_desordenado, x_simb_desordenado = polinomio_interpolador_newton(pares_xy)
-
-
-PARES_XY = [pares_xy, pares_xy_invertidos, pares_xy_desordenados]
-POLINOMIOS = [polinomio, polinomio_invertido, polinomio_desordenado]
-X_SIMBS = [x_simb, x_simb_invertido, x_simb_desordenado]
+polinomio_desordenado, _ = polinomio_interpolador_newton(pares_xy)
 
 print(METODO_NEWTON_CARTEL)
 print(f'   El grado del polinomio es: {grado_polinomio(polinomio)}')
 print(IGUALDAD_POLINOMIOS_CARTEL)
 if(coeficientes_iguales(polinomio, polinomio_invertido, x_simb) and coeficientes_iguales(polinomio, polinomio_desordenado, x_simb)):
-    print('   Los coeficientes de los tres polinomios son exactamente iguales.\n')
+    print('   Los coeficientes de los tres polinomios son exactamente iguales.')
 
 # Se busca una raíz con valores iniciales y cota de error de forma arbitraria
 print(BUSQUEDA_RAIZ_CARTEL)
 x1 = newton_mas_secante(Expression(str(polinomio), ['x']), Expression(str(sp.diff(polinomio)), ['x']), -15, 15, 0.01)
 print(f'   La raíz aproximada con dos decimales es {round(x1, 2)}\n')
 
-# GRAFICOS DE LOS POLINOMIOS Y PARES ORDENADOS
-TITULOS = ['Ordenados', 'Invertidos', 'Desordenados']
+######################
+# METODO DE LAGRANGE #
+######################
+
+polinomio_lagrange = polinomio_interpolador_lagrange(pares_xy)
+
+################################################
+# GRAFICOS DE LOS POLINOMIOS Y PARES ORDENADOS #
+################################################
+
+POLINOMIOS = [polinomio, polinomio_invertido, polinomio_desordenado]
+PARES_XY = [pares_xy, pares_xy_invertidos, pares_xy_desordenados]
+
+TITULO_NEWTON = 'Newton vs. Pares {}'
+TITULOS = [TITULO_NEWTON.format('Ordenados'), TITULO_NEWTON.format('Invertidos'), TITULO_NEWTON.format('Desordenados')]
 COLORES = ['r', 'c', 'y']
 
-x = np.linspace(-30, 30, 300)
+# Gráficos del Método de Newton
+graficar(POLINOMIOS, PARES_XY, TITULOS, COLORES)
 
-# Creo un gráfico por cada polinomio
-for i in range(len(PARES_XY)):
-    func_polinomica = sp.lambdify(X_SIMBS[i], POLINOMIOS[i], 'numpy')
-    fig, ax = plt.subplots()
-
-    ax.plot(x, func_polinomica(x), 'k')
-
-    for x_n, y_n in PARES_XY[i]:
-        ax.scatter([x_n],[y_n], color = COLORES[i])
-
-    plt.xlim(-18, 18)
-    plt.ylim(-18, 18)
-
-    plt.grid(True, linestyle='--', linewidth=0.5, color='gray') 
-    plt.title(f'Polinomio Interpolador de Newton vs. Pares {TITULOS[i]}')
-
-plt.show()
+TITULO_LAGRANGE = 'Lagrange vs. Pares Ordenados'
+# Gráficos del Método de Lagrange
+# (Nota: Este aparece al cerrar todas las ventanas de los graficos anteriores)
+graficar([polinomio_lagrange], [pares_xy], [TITULO_LAGRANGE], ['b'])
