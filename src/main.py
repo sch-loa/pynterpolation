@@ -68,12 +68,35 @@ METODO_LAGRANGE_CARTEL = """
 |                                                                            |
 |                     POLINOMIO INTERPOLADOR DE LAGRANGE                     |
 |____________________________________________________________________________|
+|                                                                            |
+|  El método funciona iterativamente. Dado un conjunto de n puntos, el       |
+|  polinomio se construye combinando n polinomios base, definidos como:      |
+|                                                                            |
+|    Ln(x) = (x - x0)(x - x1)...(x - xn) / (xn - x0)(xn - x1)...(xn - xn)    |
+|                                                                            |
+|  Se destaca que al evaluar Ln(xn) se cancela el término correspondiente    |
+|  en la división.                                                           |
+|                                                                            |
+|  Siendo el polinomio resultante la sumatoria de cada polinomio base,       |
+|  multiplicado por la ordenada actual:                                      |
+|                                                                            |
+|                 P(x) = y0*L0(x) + y1*L1(x) + ... + yn*Ln(x)                |
+|____________________________________________________________________________|
                         """
 
 CONCLUSIONES_CARTEL = """
  ____________________________________________________________________________
 |                                                                            |
 |                                CONCLUSIONES                                |
+|____________________________________________________________________________|
+|                                                                            |
+|  Si bien hay que tener en cuenta que pueden haber errores de redondeo no   |
+|  perceptibles en los gráficos debido a diferencias en los cálculos Dado    |
+|  un mismo conjunto de datos, tanto el método de Newton como el de          |
+|  Lagrange proporcionan exactamente el mismo polinomio interpolador. Lo     |
+|  mismo debería pasar si lo comparáramos con el método de diferencias       |
+|  divididas. Esto se debe a que el polinomio mínimo que pasa por todos los  |
+|  puntos dados es único.                                                    |
 |____________________________________________________________________________|
                         """
 
@@ -109,6 +132,12 @@ print(f'   La raíz aproximada con dos decimales es {round(x1, 2)}\n')
 ######################
 
 polinomio_lagrange = polinomio_interpolador_lagrange(pares_xy)
+
+print(METODO_LAGRANGE_CARTEL)
+if(coeficientes_iguales(polinomio, polinomio_lagrange, x_simb)):
+    print('   Los coeficientes de los dos polinomios son exactamente iguales.')
+
+print(CONCLUSIONES_CARTEL)
 
 ################################################
 # GRAFICOS DE LOS POLINOMIOS Y PARES ORDENADOS #

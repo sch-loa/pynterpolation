@@ -33,7 +33,7 @@ def polinomio_interpolador_lagrange(pares_xy):
         l1_factor = factor_xy / (x - x1) # Cancelo el par actual
         l1 = y1 *(l1_factor / l1_factor.replace(x, x1))
         polinomio += l1
-    
+ 
     return polinomio
 
 # Calcula el coeficiente del polinomio reemplazando el valor
