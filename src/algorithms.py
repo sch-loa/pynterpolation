@@ -64,7 +64,8 @@ def grado_polinomio(polinomio):
     return Poly(polinomio).degree()
 
 # Compara los coeficientes de una lista de polinomios entre sí
-def coeficientes_iguales(p0, p1, x):
+def coeficientes_iguales(p0, p1):
+    x = symbols('x')
     return Poly(p0, x).all_coeffs() == Poly(p1, x).all_coeffs()
 
 

@@ -119,7 +119,7 @@ polinomio_desordenado, _ = polinomio_interpolador_newton(pares_xy)
 print(METODO_NEWTON_CARTEL)
 print(f'   El grado del polinomio es: {grado_polinomio(polinomio)}')
 print(IGUALDAD_POLINOMIOS_CARTEL)
-if(coeficientes_iguales(polinomio, polinomio_invertido, x_simb) and coeficientes_iguales(polinomio, polinomio_desordenado, x_simb)):
+if(coeficientes_iguales(polinomio, polinomio_invertido) and coeficientes_iguales(polinomio, polinomio_desordenado)):
     print('   Los coeficientes de los tres polinomios son exactamente iguales.')
 
 # Se busca una raíz con valores iniciales y cota de error de forma arbitraria
@@ -134,7 +134,7 @@ print(f'   La raíz aproximada con dos decimales es {round(x1, 2)}\n')
 polinomio_lagrange = polinomio_interpolador_lagrange(pares_xy)
 
 print(METODO_LAGRANGE_CARTEL)
-if(coeficientes_iguales(polinomio, polinomio_lagrange, x_simb)):
+if(coeficientes_iguales(polinomio, polinomio_lagrange)):
     print('   Los coeficientes de los dos polinomios son exactamente iguales.')
 
 print(CONCLUSIONES_CARTEL)
