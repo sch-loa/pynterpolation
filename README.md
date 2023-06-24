@@ -1,5 +1,5 @@
 # Introduction
-Math project; its purpose is to calculate the polynomial function that passes through 20 random points, and determine the maximum number of elemental operatios necessary to calculete it. It is then plotted to compare it with the given points.
+Math project; its purpose is to calculate the polynomial function that passes through 20 random points. It is then plotted to compare it with the given points.
 
 # Versions
 - **Python 3.11.1**
